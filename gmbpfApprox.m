@@ -33,7 +33,7 @@ for K = KL
   for xi = xiL
     xiP       = xi / piByK;
     filterExL = filterExL + exp(- beta * (thetaExSftL .* thetaExSftL)) .* (cos(xiP * thetaExSftL));
-  endfor
+  end
   filterExL    = filterExL / hightFilter;
   sqFilter     = filterExL * filterExL';   % Norm of extended fiter
   filterL      = filterExL(posL);          % Inter [-K, K] data
@@ -61,8 +61,12 @@ for K = KL
       cosExpLL(p - sP + 1, :) = cosLL(p - sP + 1, :) .* coefExp;
       sinExpLL(p - sP + 1, :) = sinLL(p - sP + 1, :) .* coefExp;
     end
-    triExpLL = [cosExpLL ; sinExpLL];
-
+    if shiftPixel ~= 0 % ASFT
+      triExpLL = [cosExpLL ; sinExpLL];
+    else % SFT
+      triExpLL = cosExpLL;
+    end
+    
     for mu = muL
       edgeCond   = triExpLL(:, [1 N]);                         % Edge hight at 1 and 2K + 1
       coefFilter = inv(triExpLL * triExpLL' + mu * (edgeCond * edgeCond')) * triExpLL * filterL'; % Calc. filter coefficent

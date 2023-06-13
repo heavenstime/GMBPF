@@ -4,8 +4,8 @@ more off
 gmbpfPara
 
 % Input signal
-% inSig        = zeros(1, 100000);
-% inSig(50000) = 1;
+ inSig        = zeros(1, 100000);
+ inSig(50000) = 1;
 % inSig        = cos((xiC + 0.001 * pi) * (1:100000));
 
 % Load coefficients of filter
@@ -24,33 +24,65 @@ end
 % Apply Filter
 inteCos = zeros(1, P);
 inteSin = zeros(1, P);
-for pos = 1:K2
-  add  = inSig(pos);
 
-  inteCosTmp = inteCos;
-  inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
-  inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
-  outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
+if shiftPixel ~= 0 % ASFT
+  for pos = 1:K2
+    add  = inSig(pos);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
+  end
+
+  for pos = (K2 + 1):L
+    add = inSig(pos);
+    sub = subPara * inSig(pos - K2);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
+    inteCos = inteCos - sub;
+  end  
+
+  for pos = (L + 1):(L + K2)
+    sub = subPara * inSig(pos - K2);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
+    inteCos = inteCos - sub;
+  end  
+else 
+  for pos = 1:K2
+    add  = inSig(pos);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg.* inteCos);
+  end
+
+  for pos = (K2 + 1):L
+    add = inSig(pos);
+    sub = subPara * inSig(pos - K2);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg.* inteCos);
+    inteCos = inteCos - sub;
+  end  
+
+  for pos = (L + 1):(L + K2)
+    sub = subPara * inSig(pos - K2);
+
+    inteCosTmp = inteCos;
+    inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
+    inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
+    outSig(pos) = sum(coefFilterSg.* inteCos);
+    inteCos = inteCos - sub;
+  end  
 end
-
-for pos = (K2 + 1):L
-  add = inSig(pos);
-  sub = subPara * inSig(pos - K2);
-
-  inteCosTmp = inteCos;
-  inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
-  inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
-  outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
-  inteCos = inteCos - sub;
-end  
-
-for pos = (L + 1):(L + K2)
-  sub = subPara * inSig(pos - K2);
-
-  inteCosTmp = inteCos;
-  inteCos = cosPara .* inteCosTmp - sinPara .* inteSin + add;
-  inteSin = sinPara .* inteCosTmp + cosPara .* inteSin;
-  outSig(pos) = sum(coefFilterSg .* [inteCos inteSin]);
-  inteCos = inteCos - sub;
-end  
-

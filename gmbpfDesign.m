@@ -49,7 +49,7 @@ nL          = (-KTgt):KTgt;
 % Make target GMBPF 
 for xi = xiL
   filterTgtL = filterTgtL + exp(- beta * (nL .* nL)) .* (cos((xi) * nL));
-endfor
+end
 hightFilter = filterTgtL * cos((xiC) * nL)';
 
 while 1
@@ -58,10 +58,10 @@ while 1
     K   = minResult(1);
     sP  = minResult(3);
     muL = minResult(7);
-    if K > KL(2) && K < KL(end - 1)
-      sPS   = floor(xiC * K / pi - P / 2) + sPB;
+    if K > KL(2) && K < KL(end - 1) % K is OK
+      sPS   = floor(xiC * K / pi - P / 2) + sPB; 
       nsPLH = (nsPL - 1) / 2;
-      if sP > sPS - nsPLH + 1 && sP < sPS + nsPLH - 1
+      if sP > sPS - nsPLH + 1 && sP < sPS + nsPLH - 1  % sP is OK
 	break;
       else
 	sPB = sPB + nsPLH;
@@ -86,20 +86,27 @@ muL  = [mu];
 gmbpfApprox
 
 % Coefficients of ASFT filter
-coefFilterSg = zeros(1, 2 * P);
 if rem(sP, 2) == 0
   sSg = 1;
 else
   sSg = -1;
 end
-
 sg = sSg;
-for posC = 1:P
-  coefFilterSg(posC)     =   sg * coefFilter(posC);
-  coefFilterSg(posC + P) = - sg * coefFilter(posC + P);
-  sg = -sg;
-end
 
+if shiftPixel ~= 0 % ASFT
+  coefFilterSg = zeros(1, 2 * P);
+  for posC = 1:P
+    coefFilterSg(posC)     =   sg * coefFilter(posC);
+    coefFilterSg(posC + P) = - sg * coefFilter(posC + P);
+    sg = -sg;
+  end
+else % SFT
+  coefFilterSg = zeros(1, P);
+  for posC = 1:P
+    coefFilterSg(posC)     =   sg * coefFilter(posC);
+    sg = -sg;
+  end
+end  
 				% Save data necessary for fiter
 thetaPL = (sP:eP) * piByK;
 cosPara = cos(thetaPL) * exp(- alphaPixel);

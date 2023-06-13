@@ -71,8 +71,8 @@ for pos = 2:size(nBWL, 2)
     sbwH = dtftOmegaBWSL(pos);
   end
 end
-printf("sigma = %f xiC = %f K = %d sP = %d P = %d shift = %d toterror = %f\n", sigma, xiC, K, sP, P, shiftPixel, minResult(10));
-printf("Pass band width (%3.0fdB) = %f pi, Stop band width (%3.0fdB) = %f pi  %15.10e pi  %15.10e pi  %15.10e pi  %15.10e pi\n", 20 * log10(passV), (pbwH - pbwL) / pi, 20 * log10(stopV), (sbwH - sbwL) / pi, pbwL/pi, pbwH/pi, sbwL/pi, sbwH/pi);
+fprintf("sigma = %f xiC = %f K = %d sP = %d P = %d shift = %d toterror = %f\n", sigma, xiC, K, sP, P, shiftPixel, minResult(10));
+fprintf("Pass band width (%3.0fdB) = %f pi, Stop band width (%3.0fdB) = %f pi  %15.10e pi  %15.10e pi  %15.10e pi  %15.10e pi\n", 20 * log10(passV), (pbwH - pbwL) / pi, 20 * log10(stopV), (sbwH - sbwL) / pi, pbwL/pi, pbwH/pi, sbwL/pi, sbwH/pi);
 fprintf(fpDTFT, "# sigma = %f xiC = %f K = %d sP = %d P = %d shift = %d toterror = %f\n", sigma, xiC, K, sP, P, shiftPixel, minResult(10));
 fprintf(fpDTFT, "# Pass band width (%3.0fdB) = %f pi, Stop band width (%3.0fdB) = %f pi  %15.10e pi  %15.10e pi  %15.10e pi  %15.10e pi\n", 20 * log10(passV), (pbwH - pbwL) / pi, 20 * log10(stopV), (sbwH - sbwL) / pi, pbwL/pi, pbwH/pi, sbwL/pi, sbwH/pi);
 fclose(fpDTFT);
@@ -104,8 +104,16 @@ fclose(fp);
 % Output Coefficients of ASFT filter
 fName = sprintf("Data/coef_%5.3f_%.0f_Sft%d_P%02d.txt", xiC / pi, sigma, shiftPixel, P);
 fp    = fopen(fName, "w");
+
+if shiftPixel ~= 0 % ASFT
 for posC = 1:(2 * P)
   fprintf(fp, "%e\n", coefFilterSg(posC));
 end
+else % SFT
+for posC = 1:P
+  fprintf(fp, "%e\n", coefFilterSg(posC));
+end
+end
+
 fclose(fp);
 
