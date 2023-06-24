@@ -4,9 +4,9 @@ more off
 gmbpfPara
 
 % Input signal
- inSig        = zeros(1, 100000);
- inSig(50000) = 1;
-% inSig        = cos((xiC + 0.001 * pi) * (1:100000));
+% inSig        = zeros(1, 100000);
+% inSig(50000) = 1;
+ inSig        = cos((xiC + 0.000 * pi) * (1:100000));
 
 % Load coefficients of filter
 fName = sprintf("Data/save_%5.3f_%.0f_Sft%d_P%02d.mat", xiC / pi, sigma, shiftPixel, P);

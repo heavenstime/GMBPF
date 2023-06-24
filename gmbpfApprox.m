@@ -26,7 +26,7 @@ for K = KL
   betaw       = 2.0 * beta;
   shiftTheta  = piByK * shiftPixel;
   alphaPixel  = shiftPixel / (sigma * sigma);
-  thetaExSftL = thetaExL - shiftTheta;
+  thetaExSftL = thetaExL + shiftTheta;
 
   xiL = xiSL + xiC;
   filterExL  = zeros(1, NEx);
@@ -34,7 +34,7 @@ for K = KL
     xiP       = xi / piByK;
     filterExL = filterExL + exp(- beta * (thetaExSftL .* thetaExSftL)) .* (cos(xiP * thetaExSftL));
   end
-  filterExL    = filterExL / hightFilter;
+  filterExL    = filterExL / heightFilter;
   sqFilter     = filterExL * filterExL';   % Norm of extended fiter
   filterL      = filterExL(posL);          % Inter [-K, K] data
   filterExtL   = filterExL(posExtL);       % Outer [-K, K] data
@@ -54,7 +54,8 @@ for K = KL
       sinLL(p - sP + 1, :) = sin(p * thetaL);
     end
 % Calc. ASFT
-    coefExp  = exp(alphaPixel * ((-N + 1):0));
+%    coefExp  = exp(- alphaPixel * ((-N + 1):0));
+    coefExp  = exp(- alphaPixel * (0:(N - 1)));
     cosExpLL = zeros(eP - sP + 1, N);
     sinExpLL = zeros(eP - sP + 1, N);
     for p = sP:eP
@@ -68,7 +69,7 @@ for K = KL
     end
     
     for mu = muL
-      edgeCond   = triExpLL(:, [1 N]);                         % Edge hight at 1 and 2K + 1
+      edgeCond   = triExpLL(:, [1 N]);                         % Edge height at 1 and 2K + 1
       coefFilter = inv(triExpLL * triExpLL' + mu * (edgeCond * edgeCond')) * triExpLL * filterL'; % Calc. filter coefficent
       
       filterAL    = coefFilter' * triExpLL;                       % Approximated data

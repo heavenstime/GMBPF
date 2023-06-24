@@ -37,7 +37,7 @@ plot(dtftDOmegaL / pi, angleLA);
 figure(4)
 angleLADelay = atan2(dtftSADelay, dtftCADelay);
 gDelay       = angleLADelay(2:1001) - angleLADelay(1:1000);
-gDelay       = (gDelay - 2 * pi * (gDelay > 4) + 2 * pi * (gDelay < - 4) ) / (0.04/sigma);
+gDelay       = (gDelay - 2 * pi * (gDelay >= pi) + 2 * pi * (gDelay < - pi) ) / (0.04/sigma);
 figure(4)
 plot(dtftDOmegaL(1:1000) / pi, gDelay);
 

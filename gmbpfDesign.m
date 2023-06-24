@@ -3,7 +3,7 @@ more off
 % Read parameters
 gmbpfPara;
 
-xiSL  = pi * 0.6 * ((-2):2) / sigma;   % Gussian center angular frequency (0.24 is obtained hylistic.)
+xiSL  = pi * 0.6 * ((-2):2) / sigma;   % Gussian center angular frequency (0.6 is obtained hylistic.)
 Ex         = 5;                        % Extension for error calculation
 passV      = power(10, -3/20);         % -3 dB
 
@@ -50,7 +50,7 @@ nL          = (-KTgt):KTgt;
 for xi = xiL
   filterTgtL = filterTgtL + exp(- beta * (nL .* nL)) .* (cos((xi) * nL));
 end
-hightFilter = filterTgtL * cos((xiC) * nL)';
+heightFilter = filterTgtL * cos((xiC) * nL)';
 
 while 1
   gmbpfApprox
